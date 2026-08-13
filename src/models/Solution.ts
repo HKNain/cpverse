@@ -37,8 +37,21 @@ const SolutionSchema = new Schema<ISolution>(
     },
     videoUrl: {
       type: String,
+      required: true,
       trim: true,
     },
+    timeComplexity: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50
+    },
+    spaceComplexity: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50
+    }
   },
   {
     timestamps: true,

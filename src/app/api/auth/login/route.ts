@@ -11,11 +11,15 @@ export async function POST(req: Request) {
 
     const { loginInput, password } = await req.json();
 
+    if (!loginInput || !password) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 },
+      );
+    }
+
     const user = await User.findOne({
-      $or: [
-        { email: loginInput },
-        { username: loginInput },
-      ],
+      $or: [{ email: loginInput }, { username: loginInput }],
     });
 
     if (!user) {
