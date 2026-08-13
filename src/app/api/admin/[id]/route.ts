@@ -16,7 +16,7 @@ export async function PATCH(
     const {
       title,
       problemUrl,
-      solution,
+      code,
       category,
       videoUrl,
       timeComplexity,
@@ -60,8 +60,8 @@ export async function PATCH(
       existingSolution.problemUrl = problemUrl;
     }
 
-    if (solution !== undefined) {
-      existingSolution.solution = solution;
+    if (code !== undefined) {
+      existingSolution.code = code;
     }
 
     if (category !== undefined) {

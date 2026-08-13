@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import slugify from "slugify";
 
 import Solution from "@/models/Solution";
+import Category from "@/models/Category";
 import { connectDB } from "@/utils/db";
 
 export async function POST(req: Request) {
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
       title,
       problemUrl,
       category,
-      solution,
+      code,
       videoUrl,
       timeComplexity,
       spaceComplexity,
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
       !title ||
       !problemUrl ||
       !category ||
-      !solution ||
+      !code ||
       !videoUrl ||
       !timeComplexity ||
       !spaceComplexity
@@ -48,16 +49,37 @@ export async function POST(req: Request) {
       );
     }
 
+    const categorySlug = slugify(category, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
+
+    let existingCategory = await Category.findOne({
+      slug: categorySlug,
+    });
+
+    if (!existingCategory) {
+      existingCategory = await Category.create({
+        name: category,
+        slug: categorySlug,
+        solutions: [],
+      });
+    }
+
     const newSolution = await Solution.create({
       title,
       slug,
       problemUrl,
-      category,
-      solution,
+      category: existingCategory._id,
+      code,
       videoUrl,
       timeComplexity,
       spaceComplexity,
     });
+
+    existingCategory.solutions.push(newSolution._id);
+    await existingCategory.save();
 
     return NextResponse.json(
       {

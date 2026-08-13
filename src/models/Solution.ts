@@ -1,11 +1,11 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface ISolution extends Document {
   title: string;
   slug: string;
   problemUrl: string;
-  category: string;
-  solution: string;
+  category: Types.ObjectId;
+  code: string;
   videoUrl: string;
   timeComplexity: string;
   spaceComplexity: string;
@@ -32,11 +32,11 @@ const SolutionSchema = new Schema<ISolution>(
       trim: true,
     },
     category: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
-      trim: true,
     },
-    solution: {
+    code: {
       type: String,
       required: true,
       trim: true,
@@ -50,14 +50,14 @@ const SolutionSchema = new Schema<ISolution>(
       type: String,
       required: true,
       trim: true,
-      maxlength: 50
+      maxlength: 50,
     },
     spaceComplexity: {
       type: String,
       required: true,
       trim: true,
-      maxlength: 50
-    }
+      maxlength: 50,
+    },
   },
   {
     timestamps: true,
