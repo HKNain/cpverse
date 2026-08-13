@@ -1,0 +1,72 @@
+import { NextResponse } from "next/server";
+import slugify from "slugify";
+
+import Solution from "@/models/Solution";
+import { connectDB } from "@/utils/db";
+
+export async function POST(req: Request) {
+  try {
+    await connectDB();
+
+    const {
+      title,
+      problemUrl,
+      category,
+      solution,
+      videoUrl,
+      timeComplexity,
+      spaceComplexity,
+    } = await req.json();
+
+    if (
+      !title ||
+      !problemUrl ||
+      !category ||
+      !solution ||
+      !videoUrl ||
+      !timeComplexity ||
+      !spaceComplexity
+    ) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 },
+      );
+    }
+
+    const slug = slugify(title, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
+
+    const existingSolution = await Solution.findOne({ slug });
+
+    if (existingSolution) {
+      return NextResponse.json(
+        { message: "A solution with this title already exists" },
+        { status: 409 },
+      );
+    }
+
+    const newSolution = await Solution.create({
+      title,
+      slug,
+      problemUrl,
+      category,
+      solution,
+      videoUrl,
+      timeComplexity,
+      spaceComplexity,
+    });
+
+    return NextResponse.json(
+      {
+        message: "Solution created successfully",
+        solution: newSolution,
+      },
+      { status: 201 },
+    );
+  } catch {
+    return NextResponse.json({ message: "Server Error" }, { status: 500 });
+  }
+}

@@ -4,6 +4,7 @@ export interface ISolution extends Document {
   title: string;
   slug: string;
   problemUrl: string;
+  category: string;
   solution: string;
   videoUrl: string;
   timeComplexity: string;
@@ -26,6 +27,11 @@ const SolutionSchema = new Schema<ISolution>(
       lowercase: true,
     },
     problemUrl: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    category: {
       type: String,
       required: true,
       trim: true,
