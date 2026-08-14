@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 import { CategoryProvider } from "@/context/CategoryContext";
 import Sidebar from "@/components/Sidebar";
