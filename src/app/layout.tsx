@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import { CategoryProvider } from "@/context/CategoryContext";
 
 export const metadata: Metadata = {
   title: "CP Verse",
@@ -14,8 +15,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <CategoryProvider>
         {children}
         <Analytics/>
+        </CategoryProvider>
         </body>
     </html>
   );

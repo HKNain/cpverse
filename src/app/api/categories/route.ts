@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-
 import Category from "@/models/Category";
+import "@/models/Solution";
 import { connectDB } from "@/utils/db";
 
 export async function GET() {
@@ -18,7 +18,8 @@ export async function GET() {
       },
       { status: 200 },
     );
-  } catch {
+  } catch (error){
+    console.error("CATEGORY ERROR:", error);
     return NextResponse.json(
       { message: "Server Error" },
       { status: 500 },
