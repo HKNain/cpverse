@@ -1,14 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
 
 import Solution from "@/models/Solution";
 import Category from "@/models/Category";
 import { connectDB } from "@/utils/db";
+import { authenticate } from "@/utils/auth";
 
 export async function PATCH(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const user = authenticate(req);
+
+  if (!user) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
   try {
     await connectDB();
 
@@ -146,9 +152,14 @@ export async function PATCH(
 // =====================================================
 
 export async function DELETE(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const user = authenticate(req);
+
+  if (!user) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
   try {
     await connectDB();
 

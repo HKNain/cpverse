@@ -294,7 +294,7 @@ export default function EditSolutionsPage() {
             {Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="h-[73px] animate-pulse border-b border-[#1c1c1c] bg-[#111111]"
+                className="h-18.25 animate-pulse border-b border-[#1c1c1c] bg-[#111111]"
               />
             ))}
           </div>

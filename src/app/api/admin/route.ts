@@ -1,11 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import slugify from "slugify";
 
 import Solution from "@/models/Solution";
 import Category from "@/models/Category";
 import { connectDB } from "@/utils/db";
+import { authenticate } from "@/utils/auth";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const user = authenticate(req);
+
+  if (!user) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
   try {
     await connectDB();
 
