@@ -2,70 +2,103 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useCategories } from "@/context/CategoryContext";
 
 export default function Sidebar() {
-  const { categories, loading } = useCategories();
+  const { categories } = useCategories();
 
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openCategories, setOpenCategories] = useState<
+    Record<string, boolean>
+  >({});
 
-  const toggleCategory = (id: string) => {
-    setCollapsed((prev) => ({
+  const toggleCategory = (slug: string) => {
+    setOpenCategories((prev) => ({
       ...prev,
-      [id]: !prev[id],
+      [slug]: !prev[slug],
     }));
   };
 
-  if (loading) {
-    return (
-      <aside className="h-full w-68 shrink-0 border-r border-[#1c1c1c] bg-[#080808] p-4">
-        <div className="animate-pulse space-y-3">
-          <div className="h-5 w-32 rounded bg-[#202020]" />
-          <div className="h-4 w-40 rounded bg-[#181818]" />
-          <div className="h-4 w-36 rounded bg-[#181818]" />
-          <div className="h-5 w-28 rounded bg-[#202020]" />
-        </div>
-      </aside>
-    );
-  }
-
   return (
-    <aside className="h-full w-68 shrink-0 overflow-y-auto border-r border-[#1c1c1c] bg-[#080808]">
-      <div className="p-3">
-        <p className="mb-4 px-2 text-xs font-semibold uppercase tracking-wider text-[#666]">
-          Solutions
-        </p>
+    <>
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed left-4 top-12 z-40 flex h-10 w-10 items-center justify-center rounded-md border border-[#292929] bg-[#111] text-[#aaa] transition hover:bg-[#181818] hover:text-white md:hidden"
+        aria-label="Open sidebar"
+      >
+        <Menu size={20} />
+      </button>
 
-        <div className="space-y-1">
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+        />
+      )}
+
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 w-72
+          border-r border-[#242424]
+          bg-[#0b0b0b]
+          transition-transform duration-300
+          md:static md:z-auto md:w-64
+          md:translate-x-0
+          ${
+            mobileOpen
+              ? "translate-x-0"
+              : "-translate-x-full md:translate-x-0"
+          }
+        `}
+      >
+        {/* Sidebar Header */}
+        <div className="flex h-16 items-center justify-between border-b border-[#242424] px-4">
+          <span className="text-sm font-semibold text-[#ddd]">
+            Solutions
+          </span>
+
+          {/* Mobile close */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="flex h-9 w-9 items-center justify-center rounded-md text-[#777] transition hover:bg-[#181818] hover:text-white md:hidden"
+            aria-label="Close sidebar"
+          >
+            <X size={19} />
+          </button>
+        </div>
+
+        {/* Categories */}
+        <div className="h-[calc(100vh-64px)] overflow-y-auto p-3">
           {categories.map((category) => {
-            const isCollapsed = collapsed[category.slug] ?? false;
+            const isOpen = openCategories[category.slug];
 
             return (
-              <div key={category.slug}>
+              <div key={category.slug} className="mb-1">
+                {/* Category */}
                 <button
-                  type="button"
                   onClick={() => toggleCategory(category.slug)}
-                  className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-[#b5b5b5] transition hover:bg-[#151515] hover:text-[#f0f0f0]"
+                  className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm text-[#999] transition hover:bg-[#151515] hover:text-[#eee]"
                 >
-                  <span className="truncate">
-                    {category.name}
-                  </span>
+                  <span>{category.name}</span>
 
-                  {isCollapsed ? (
-                    <ChevronRight size={16} />
-                  ) : (
-                    <ChevronDown size={16} />
-                  )}
+                  <ChevronDown
+                    size={15}
+                    className={`transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
-                {!isCollapsed && (
-                  <div className="ml-2 border-l border-[#1c1c1c] pl-2">
+                {/* Solutions */}
+                {isOpen && (
+                  <div className="ml-3 border-l border-[#292929] pl-2">
                     {category.solutions.map((solution) => (
                       <Link
                         key={solution.slug}
                         href={`/solutions/${solution.slug}`}
-                        className="block truncate rounded-md px-3 py-1.5 text-sm text-[#777] transition hover:bg-[#151515] hover:text-[#e5e5e5]"
+                        onClick={() => setMobileOpen(false)}
+                        className="block rounded-md px-3 py-2 text-xs text-[#666] transition hover:bg-[#151515] hover:text-[#ddd]"
                       >
                         {solution.title}
                       </Link>
@@ -76,7 +109,7 @@ export default function Sidebar() {
             );
           })}
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

@@ -40,6 +40,7 @@ export default function SolutionPage() {
 
         if (!res.ok) {
           setSolution(null);
+          return;
         }
 
         const data = await res.json();
@@ -55,6 +56,12 @@ export default function SolutionPage() {
 
     fetchSolution();
   }, [slug]);
+
+  useEffect(() => {
+    if (solution) {
+      document.title = `CP Verse | ${solution.title}`;
+    }
+  }, [solution]);
 
   const copyCode = async () => {
     if (!solution) return;

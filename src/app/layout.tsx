@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 import { CategoryProvider } from "@/context/CategoryContext";
-import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
@@ -15,15 +14,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CategoryProvider>
-          <Navbar />
-
-          <div className="flex">
-            <Sidebar/>
             <main className="min-w-0 flex-1">
+              <Navbar/>
               {children}
               <Analytics />
             </main>
-          </div>
         </CategoryProvider>
       </body>
     </html>
